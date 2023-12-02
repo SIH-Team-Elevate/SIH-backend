@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "create-react-app": "^5.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fabric-contract-api": "^2.5.4",
+    "fabric-network": "^2.2.20",
+    "mongoose": "^8.0.2",
+    "nodemon": "^3.0.2",
+    "react-router-dom": "^6.20.1"
+  },
+  "name": "sih",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./backend/router/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
