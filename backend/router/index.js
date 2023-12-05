@@ -7,7 +7,7 @@ const dumster=require('../database/mongodb/Schema/dumster.js')
 const shovel=require('../database/mongodb/Schema/shovel.js')
 const hardware=require("./hardware/index.js")
 const frontend=require("./frontend/index.js")
-const hyperledger=require("./hyperledger/index.js")
+// const hyperledger=require("./hyperledger/index.js")
 
 
 const app=express();
@@ -15,13 +15,15 @@ const app=express();
 
 connect();
 
+const cors = require('cors');
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use('/hardware',hardware)
 app.use('/frontend',frontend)
-app.use('/hyperledger',hyperledger)
+// app.use('/hyperledger',hyperledger)
 app.use(express.static(path.join(__dirname, "../static/build")));
-app.listen(3000,()=>{
+app.listen(5000,()=>{
     console.log("server is running")
 })

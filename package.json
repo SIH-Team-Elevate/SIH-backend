@@ -1,13 +1,15 @@
 {
   "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "cors": "^2.8.5",
     "create-react-app": "^5.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fabric-contract-api": "^2.5.4",
     "fabric-network": "^2.2.20",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.2",
-    "nodemon": "^3.0.2",
-    "react-router-dom": "^6.20.1"
+    "nodemon": "^3.0.2"
   },
   "name": "sih",
   "version": "1.0.0",
