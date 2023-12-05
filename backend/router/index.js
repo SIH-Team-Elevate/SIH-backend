@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express=require('express');
 const path=require('path');
 
@@ -24,6 +25,6 @@ app.use('/hardware',hardware)
 app.use('/frontend',frontend)
 // app.use('/hyperledger',hyperledger)
 app.use(express.static(path.join(__dirname, "../static/build")));
-app.listen(5000,()=>{
+app.listen(process.env.PORT ,()=>{
     console.log("server is running")
 })

@@ -2,25 +2,46 @@ const express=require('express');
 const jwt=require('jsonwebtoken');
 const User=require('../../database/mongodb/Schema/users');
 const frontend=express.Router();
-frontend.post('/authenticate',(req,res)=>{
-    User.findOne({email:req.body.email},(err,user)=>{
-        if(err) throw err;
-        if(!user){
-            res.json({success:false,message:'Authentication failed. User not found.'});
-        }else if(user){
-            user.comparePassword(req.body.password,(err,isMatch)=>{
-                if(err) throw err;
-                if(isMatch){
-                    user.generateAutho((err,user)=>{
-                        if(err) throw err;
-                        res.json({success:true,message:'Authentication successed.',autho:user.autho,type:user.type});
-                    });
-                }else{
-                    res.json({success:false,message:'Authentication failed. Wrong password.'});
-                }
-            });
-        }
-    });
+frontend.post('/authenticate', (req, res) => {
+    User.findOne({ email: req.body.email })
+        .then(user => {
+            if (!user) {
+                res.status(404).json({ success: false, message: 'Authentication failed. User not found.' });
+            } else {
+                user.comparePassword(req.body.password, (err, isMatch) => {
+                    if (err) throw err;
+                    if (isMatch) {
+                        user.generateAutho()
+                            .then(user => {
+                                res.json({ success: true, message: 'Authentication succeeded.', autho: user.autho, type: user.type });
+                            })
+                            .catch(err => {
+                                throw err;
+                            });
+                    } else {
+                        res.status(401).json({ success: false, message: 'Authentication failed. Wrong password.' });
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            throw err;
+        });
+});
+frontend.post('/register',async(req,res)=>{
+    try{
+        var newUser=new User({
+            email:req.body.email,
+            password:req.body.password,
+            type:req.body.type
+        });
+        await newUser.generateAutho();
+        await newUser.save();
+        res.json({success:true,message:'Register successed',autho:newUser.autho,type:newUser.type});
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Register failed'+err});
+    }
 });
 frontend.use((req,res,next)=>{
     var autho=req.body.autho||req.query.autho||req.headers['x-access-token'];

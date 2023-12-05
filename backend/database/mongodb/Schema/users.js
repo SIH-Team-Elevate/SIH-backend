@@ -14,14 +14,13 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    tyep:{
+    type:{
         type:String,
         enum:['admin','worker','driver'],
         required:true
     },
     autho: {
         type: String,
-        required: true
     },
     lastLogin: {
         type: Date,
@@ -48,6 +47,7 @@ UserSchema.methods.comparePassword = function(password, cb) {
     });
 };
 UserSchema.methods.compareAutho = function(autho, cb) {
+    if(!this.autho) return cb(null, false);
     bcrypt.compare(autho, this.autho, function(err, isMatch) {
         if (err) return cb(err);
         cb(null, isMatch);
@@ -57,9 +57,12 @@ UserSchema.methods.generateAutho = function(cb) {
     var user = this;
     var autho = jwt.sign({ _id: user._id.toHexString() }, process.env.SECRET, { expiresIn: '180s' });
     user.autho = autho;
-    user.save(function(err, user) {
-        if(err) return cb(err);
-        cb(null, user);
-    });
+    return user.save()
+        .then(user => {
+            return user;
+        })
+        .catch(err => {
+            throw err;
+        });
 }
 module.exports = mongoose.model('users', UserSchema);
