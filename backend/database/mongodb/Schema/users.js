@@ -10,9 +10,17 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
+    name:{
+        type:String,
+        required:true
+    },
     password: {
         type: String,
         required: true
+    },
+    total:{
+        type:Number,
+        default:0,
     },
     type:{
         type:String,
@@ -25,7 +33,32 @@ const UserSchema = new Schema({
     lastLogin: {
         type: Date,
         default: Date.now
-    }
+    },
+    History: [{
+        startingTime: {
+            type: Date,
+            default: Date.now
+        },
+        endTime: {
+            type: Date,
+            default: () => {
+                let nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                return nextYear;
+            }
+        },
+        location: {
+            type: String,
+            required: true
+        }
+    }],
+    queries:[{
+        _id:{
+            type:Schema.Types.ObjectId,
+            ref:'queries'
+        }
+    }]
+
 });
 UserSchema.pre('save', function(next) {
     var user = this;
