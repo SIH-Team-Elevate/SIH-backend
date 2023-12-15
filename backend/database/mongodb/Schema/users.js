@@ -57,7 +57,15 @@ const UserSchema = new Schema({
             type:Schema.Types.ObjectId,
             ref:'queries'
         }
-    }]
+    }],
+    equipment: {
+        type: Schema.Types.ObjectId,
+        refPath: 'onModel',
+    },
+    onModel: {
+        type: String,
+        enum: ['dumsters', 'shovels']
+    }
 
 });
 UserSchema.pre('save', function(next) {

@@ -12,7 +12,11 @@ const DumsterSchema = new mongoose.Schema({
     capacity:{
         type:Number,
         required:true
-    }
+    },
+    driver:{
+        type:Schema.Types.ObjectId,
+        ref:'User'
+    },
 });
 const Dumster = mongoose.model('Dumster',DumsterSchema);
 module.exports = Dumster;

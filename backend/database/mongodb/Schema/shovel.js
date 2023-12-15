@@ -8,6 +8,10 @@ const shovel= new Schema({
     size: {
         type: Number,
         required: true
-    }
+    },
+    worker: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 module.exports = mongoose.model('Shovel', shovel);
