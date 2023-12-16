@@ -17,6 +17,11 @@ const DumsterSchema = new mongoose.Schema({
         type:Schema.Types.ObjectId,
         ref:'User'
     },
+    status:{
+        type:Boolean,
+        required:true,
+        default:false
+    }
 });
 const Dumster = mongoose.model('Dumster',DumsterSchema);
 module.exports = Dumster;

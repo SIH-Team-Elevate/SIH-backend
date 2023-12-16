@@ -2,6 +2,9 @@ const express=require('express');
 const jwt=require('jsonwebtoken');
 const User=require('../../database/mongodb/Schema/users');
 const Query=require('../../database/mongodb/Schema/queries');
+const Dumper=require('../../database/mongodb/Schema/dumster');
+const Shovel=require('../../database/mongodb/Schema/shovel');
+const Annoucement = require('../../database/mongodb/Schema/annoucements');
 const frontend=express.Router();
 frontend.post('/authenticate', (req, res) => {
     User.findOne({ email: req.body.email })
@@ -139,7 +142,7 @@ frontend.post('/queries',(req,res)=>{
 frontend.get('/queries',(req,res)=>{
     try{
         const status=false;
-        const queries=Query.find({status:status}).populate('user','name email').then(queries=>{
+        const queries=Query.find({status:status}).populate('user','name email type _id').then(queries=>{
             res.json({success:true,message:'Get queries succeeded',queries:queries});
         }).catch(err=>{
             throw err;
@@ -149,4 +152,76 @@ frontend.get('/queries',(req,res)=>{
         res.status(401).json({success:false,message:'Get queries failed'+err});
     }
 })
+frontend.get('/dumpers_shovels_summary',async (req,res)=>{
+    try{
+        const trueDumper=await Dumper.countDocuments({status:true});
+        const falseDumper=await Dumper.countDocuments({status:false});
+        const trueShovel=await Shovel.countDocuments({status:true});
+        const falseShovel=await Shovel.countDocuments({status:false});
+        res.json({success:true,message:'Get dumpers_shovels_summary succeeded',trueDumper:trueDumper,falseDumper:falseDumper,trueShovel:trueShovel,falseShovel:falseShovel});
+
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Get dumpers_shovels_summary failed'+err});
+    }
+});
+
+//ANNOUCEMENTS
+frontend.get('/annoucements',(req,res)=>{
+    try{
+        const annoucements=Annoucement.find({}).then(annoucements=>{
+            res.json({success:true,message:'Get annoucements succeeded',annoucements:annoucements});
+        }).catch(err=>{
+            throw err;
+        });
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Get annoucements failed'+err});
+    }
+})
+frontend.post('/annoucements',(req,res)=>{
+    try{
+        const newAnnoucement=new Annoucement({
+            content:req.body.content
+        });
+        newAnnoucement.save().then(annoucement=>{
+            res.json({success:true,message:'Post annoucements succeeded',annoucement:annoucement});
+        }).catch(err=>{
+            throw err;
+        });
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Post annoucements failed'+err});
+    }
+})
+
+
+
+
+//Dumpster and Shovel
+frontend.get('/dumpsters_shovels',async (req,res)=>{
+    try{
+        const dumper=await Dumper.find({}).populate('driver','name')
+        const shovel=await Shovel.find({}).populate('driver','name')
+        res.status(200).json({success:true,message:'Get dumpsters_shovels succeeded',dumper:dumper,shovel:shovel});
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Get dumpsters failed'+err});
+    }
+});
+frontend.post('/dumpster',async (req,res)=>{
+    try{
+        const newDumper=new Dumper({
+            id:req.body.id,
+            name:req.body.name,
+            capacity:req.body.capacity
+        });
+        await newDumper.save();
+        res.status(200).json({success:true,message:'Post dumpster succeeded',dumper:newDumper});
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Post dumpster failed'+err});
+    }
+});
+
 module.exports=frontend;

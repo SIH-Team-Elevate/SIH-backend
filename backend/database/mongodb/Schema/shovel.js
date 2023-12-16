@@ -13,5 +13,10 @@ const shovel= new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    status: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 module.exports = mongoose.model('Shovel', shovel);
