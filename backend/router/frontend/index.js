@@ -14,10 +14,10 @@ frontend.post('/authenticate', (req, res) => {
             } else {
                 user.comparePassword(req.body.password, (err, isMatch) => {
                     if (err) throw err;
-                    if (isMatch) {
+                    if (isMatch&&user.type==='admin') {
                         user.generateAutho()
                             .then(user => {
-                                res.json({ success: true, message: 'Authentication succeeded.', autho: user.autho, type: user.type });
+                                res.json({ success: true, message: 'Authentication succeeded.', autho: user.autho,name:user.name });
                             })
                             .catch(err => {
                                 throw err;
@@ -48,24 +48,25 @@ frontend.post('/register',async(req,res)=>{
         res.status(401).json({success:false,message:'Register failed'+err});
     }
 });
-// frontend.use((req,res,next)=>{
-//     var autho=req.body.autho||req.query.autho||req.headers['x-access-token'];
-//     if(autho){
-//         jwt.verify(autho,process.env.SECRET,(err,decoded)=>{
-//             if(err){
-//                 return res.json({success:false,message:'Failed to authenticate token.'});
-//             }else{
-//                 req.decoded=decoded;
-//                 next();
-//             }
-//         });
-//     }else{
-//         return res.status(403).send({
-//             success:false,
-//             message:'No token provided.'
-//         });
-//     }
-// })
+frontend.use((req,res,next)=>{
+    var autho=req.headers['Authorization'] || req.headers['authorization'];
+    if(autho){
+        autho=autho.split(' ')[1];
+        jwt.verify(autho,process.env.SECRET,(err,decoded)=>{
+            if(err){
+                return res.status(403).json({success:false,message:'Failed to authenticate token.'});
+            }else{
+                req.decoded=decoded;
+                next();
+            }
+        });
+    }else{
+        return res.status(403).send({
+            success:false,
+            message:'No token provided.'
+        });
+    }
+})
 
 frontend.get('/users', (req, res) => {
     try {
@@ -169,7 +170,7 @@ frontend.get('/dumpers_shovels_summary',async (req,res)=>{
 //ANNOUCEMENTS
 frontend.get('/annoucements',(req,res)=>{
     try{
-        const annoucements=Annoucement.find({}).then(annoucements=>{
+        const annoucements=Annoucement.find({}).sort({createdAt:-1}).then(annoucements=>{
             res.json({success:true,message:'Get annoucements succeeded',annoucements:annoucements});
         }).catch(err=>{
             throw err;

@@ -96,7 +96,7 @@ UserSchema.methods.compareAutho = function(autho, cb) {
 };
 UserSchema.methods.generateAutho = function(cb) {
     var user = this;
-    var autho = jwt.sign({ _id: user._id.toHexString() }, process.env.SECRET, { expiresIn: '180s' });
+    var autho = jwt.sign({ _id: user._id.toHexString() }, process.env.SECRET, { expiresIn: '1800s' });
     user.autho = autho;
     return user.save()
         .then(user => {
