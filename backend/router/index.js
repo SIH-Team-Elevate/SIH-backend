@@ -8,6 +8,7 @@ const dumster=require('../database/mongodb/Schema/dumster.js')
 const shovel=require('../database/mongodb/Schema/shovel.js')
 const hardware=require("./hardware/index.js")
 const frontend=require("./frontend/index.js")
+const appd=require("./appd/index.js")
 // const hyperledger=require("./hyperledger/index.js")
 
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({extended:true}));
 app.use('/hardware',hardware)
 app.use('/frontend',frontend)
 // app.use('/hyperledger',hyperledger)
+app.use('/appd',appd)
 app.use(express.static(path.join(__dirname, "../static/build")));
 app.listen(process.env.PORT ,()=>{
     console.log("server is running")
