@@ -203,7 +203,7 @@ frontend.post('/annoucements',(req,res)=>{
 frontend.get('/dumpsters_shovels',async (req,res)=>{
     try{
         const dumper=await Dumper.find({}).populate('driver','name')
-        const shovel=await Shovel.find({}).populate('driver','name')
+        const shovel=await Shovel.find({}).populate('worker','name')
         res.status(200).json({success:true,message:'Get dumpsters_shovels succeeded',dumper:dumper,shovel:shovel});
     }
     catch(err){
@@ -224,5 +224,18 @@ frontend.post('/dumpster',async (req,res)=>{
         res.status(401).json({success:false,message:'Post dumpster failed'+err});
     }
 });
-
+frontend.post('/shovel',async (req,res)=>{
+    try{
+        const newShovel=new Shovel({
+            id:req.body.id,
+            name:req.body.name,
+            size:req.body.size
+        });
+        await newShovel.save();
+        res.status(200).json({success:true,message:'Post shovel succeeded',shovel:newShovel});
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Post shovel failed'+err});
+    }
+});
 module.exports=frontend;
