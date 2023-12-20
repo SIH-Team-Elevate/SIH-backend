@@ -35,7 +35,7 @@ const io = socketIo(server, {
         methods: ["GET", "POST"], // Allow these HTTP methods
         allowedHeaders: ["my-custom-header"], // Allow these headers
         credentials: true
-    }});
+    },allowEIO3: true});
 
 io.on("connection",(Socket) => {
     Socket.on("location", async ({userId, latitude, longitude, reached, dist, time}) => {
