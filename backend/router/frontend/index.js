@@ -68,6 +68,18 @@ frontend.use((req,res,next)=>{
     }
 })
 
+frontend.get('/drivers',async(req,res)=>{
+    try{
+        await User.find({type:'driver',status:true}).then(users=>{
+            res.json({success:true,message:'Get drivers succeeded',users:users});
+        }).catch(err=>{
+            throw err;
+        });
+    }
+    catch(err){
+        res.status(401).json({success:false,message:'Get drivers failed'+err});
+    }
+})
 frontend.get('/users', (req, res) => {
     try {
         const type = req.query.type;
@@ -210,16 +222,16 @@ frontend.get('/dumpsters_shovels',async (req,res)=>{
         res.status(401).json({success:false,message:'Get dumpsters failed'+err});
     }
 });
-frontend.get('/dumpster_shovel_location',async (req,res)=>{
-    try{
-        const dumper=await Dumper.find({status:true}).select('latitude longitude');
-        const shovel=await Shovel.find({status:true}).select('latitude longitude');
-        res.status(200).json({success:true,message:'Get dumpster_shovel_location succeeded',dumper:dumper,shovel:shovel});
-    }
-    catch(err){
-        res.status(401).json({success:false,message:'Get dumpster_shovel_location failed'+err});
-    }
-});
+// frontend.get('/dumpster_shovel_location',async (req,res)=>{
+//     try{
+//         const dumper=await Dumper.find({status:true}).select('latitude longitude');
+//         const shovel=await Shovel.find({status:true}).select('latitude longitude');
+//         res.status(200).json({success:true,message:'Get dumpster_shovel_location succeeded',dumper:dumper,shovel:shovel});
+//     }
+//     catch(err){
+//         res.status(401).json({success:false,message:'Get dumpster_shovel_location failed'+err});
+//     }
+// });
 frontend.post('/dumpster',async (req,res)=>{
     try{
         const newDumper=new Dumper({

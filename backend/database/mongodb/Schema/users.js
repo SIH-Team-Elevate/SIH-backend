@@ -65,8 +65,27 @@ const UserSchema = new Schema({
     onModel: {
         type: String,
         enum: ['dumsters', 'shovels']
+    },
+    latitude:{
+        type:Number,
+        required:true,
+        default:0
+    },
+    longitude:{
+        type:Number,
+        required:true,
+        default:0
+    },
+    reached:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
+    status:{
+        type:Boolean,
+        required:true,
+        default:false
     }
-
 });
 UserSchema.pre('save', function(next) {
     var user = this;
